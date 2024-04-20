@@ -1,0 +1,4 @@
+logging.level:
+  ROOT: INFO
+  org.springframework.http: DEBUG
+  org.springframework.web.reactive.function.client: DEBUG

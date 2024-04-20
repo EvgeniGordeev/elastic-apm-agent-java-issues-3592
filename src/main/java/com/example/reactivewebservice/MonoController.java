@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple6;
+import reactor.util.function.Tuple2;
 
 import java.util.Map;
 
@@ -26,17 +26,13 @@ public class MonoController {
     }
 
     @GetMapping("/cats")
-    public Mono<Tuple6> cats(
+    public Mono<Tuple2> cats(
     ) {
         WebClient webClient = webClientBuilder.baseUrl("https://catfact.ninja/fact").build();
         // every time there is a new fact
         Mono<CatFacts> cat1 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        Mono<CatFacts> cat2 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        Mono<CatFacts> cat3 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        Mono<CatFacts> cat4 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        Mono<CatFacts> cat5 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        Mono<CatFacts> cat6 = webClient.get().retrieve().bodyToMono(CatFacts.class);
-        return Mono.zip(cat1, cat2, cat3, cat4, cat5, cat6).map(cats -> cats);
+        Mono<Map> postResponse = webClientBuilder.baseUrl("https://httpbin.org/post").build().post().retrieve().bodyToMono(Map.class);
+        return Mono.zip(cat1, postResponse).map(cats -> cats);
     }
 
     static class CatFacts {
